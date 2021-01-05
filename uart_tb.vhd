@@ -61,27 +61,66 @@ begin
 
     proc_test_sequence : process is
     begin
-        reset <= '1';
+        reset                 <= '1';
         uart_tx.data_write_en <= '0';
-        uart_tx.data_par <= (others => '0');
-        uart_tx.data_bit9 <= '0';
-        uart_tx.config <= b"00000";
+        uart_tx.data_par      <= (others => '0');
+        uart_tx.data_bit9     <= '0';
+        uart_tx.config        <= b"00000";
         wait for c_CLK_PERIOD_20MHZ;
 
         reset <= '0';
         wait for c_CLK_PERIOD_20MHZ;
 
-        uart_tx.data_par <= x"55";
+        -- Send 8-bit data
+        uart_tx.data_par      <= x"55";
         uart_tx.data_write_en <= '1';
-        uart_tx.config <= b"00011";
+        uart_tx.config(1)     <= '1';
+        uart_tx.config(0)     <= '1';
 
         wait for c_CLK_PERIOD_20MHZ;
-        uart_tx.data_par <= x"00";
+        uart_tx.data_par      <= x"00";
         uart_tx.data_write_en <= '0';
 
+        wait for 5000 * c_CLK_PERIOD_20MHZ;
 
-        wait for 10000 * c_CLK_PERIOD_20MHZ;
-        report "Test";
+        -- Send 8-bit data with parity bit
+        uart_tx.config(3)     <= '1';
+        uart_tx.config(2)     <= '1';
+        uart_tx.data_par      <= x"BB";
+        uart_tx.data_write_en <= '1';
+
+        wait for c_CLK_PERIOD_20MHZ;
+        uart_tx.data_par      <= x"00";
+        uart_tx.data_write_en <= '0';
+
+        wait for 5000 * c_CLK_PERIOD_20MHZ;
+
+        -- Send 9-bit data
+        uart_tx.config(3)     <= '0';
+        uart_tx.data_bit9     <= '1';
+        uart_tx.data_par      <= x"AA";
+        uart_tx.data_write_en <= '1';
+
+        wait for c_CLK_PERIOD_20MHZ;
+        uart_tx.data_par      <= x"00";
+        uart_tx.data_bit9     <= '0';
+        uart_tx.data_write_en <= '0';
+
+        wait for 5000 * c_CLK_PERIOD_20MHZ;
+
+        -- Send 9-bit data with 2 stop bits
+        uart_tx.config(4)     <= '1';
+        uart_tx.data_bit9     <= '1';
+        uart_tx.data_par      <= x"AA";
+        uart_tx.data_write_en <= '1';
+
+        wait for c_CLK_PERIOD_20MHZ;
+        uart_tx.data_par      <= x"00";
+        uart_tx.data_bit9     <= '0';
+        uart_tx.data_write_en <= '0';
+
+        wait for 5000 * c_CLK_PERIOD_20MHZ;
+
         finish;
     end process proc_test_sequence;
 

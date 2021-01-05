@@ -1,11 +1,11 @@
 [*]
 [*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
-[*] Tue Jan  5 18:01:41 2021
+[*] Tue Jan  5 20:33:16 2021
 [*]
-[dumpfile] "/home/jhertz5/Code/vhdl_exercises/uart/work/wave.ghw"
-[dumpfile_mtime] "Tue Jan  5 17:50:14 2021"
-[dumpfile_size] 159748
-[savefile] "/home/jhertz5/Code/vhdl_exercises/uart/uart_tb.gtkw"
+[dumpfile] "/home/jhertz5/Code/vhdl_exercises/UART_VHDL/work/wave.ghw"
+[dumpfile_mtime] "Tue Jan  5 20:33:09 2021"
+[dumpfile_size] 324079
+[savefile] "/home/jhertz5/Code/vhdl_exercises/UART_VHDL/uart_tb.gtkw"
 [timestart] 0
 [size] 959 1022
 [pos] 960 0
@@ -66,8 +66,6 @@ top.uart_tb.cmp_uart_tx.tx_shift_reg.shift_en
 top.uart_tb.cmp_uart_tx.tx_state
 top.uart_tb.cmp_uart_tx.next_state
 @28
-top.uart_tb.cmp_uart_tx.extend_stop_bits
-@29
 top.uart_tb.cmp_uart_tx.tx_2_stop_bits
 [pattern_trace] 1
 [pattern_trace] 0

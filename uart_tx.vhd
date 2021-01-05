@@ -11,14 +11,14 @@ library work;
 
 entity uart_tx is
     port (
-        clk_i         : in  std_logic;                    -- Clock In
-        reset_i       : in  std_logic;                    -- Async Reset (actve high)
+        clk_i           : in  std_logic;                    -- Clock In
+        reset_i         : in  std_logic;                    -- Async Reset (actve high)
         data_write_en_i : in  std_logic;                    -- Data In Write Enable (active high)
-        data_par_i    : in  std_logic_vector(7 downto 0); -- Data Parallel In
-        data_bit9_i   : in  std_logic;                    -- Data Bit 9 In (optional)
-        config_i      : in  std_logic_vector(4 downto 0); -- Config Register
-        status_o      : out std_logic_vector(1 downto 0); -- Status Register
-        data_ser_o    : out std_logic                     -- Data Serial Out
+        data_par_i      : in  std_logic_vector(7 downto 0); -- Data Parallel In
+        data_bit9_i     : in  std_logic;                    -- Data Bit 9 In (optional)
+        config_i        : in  std_logic_vector(4 downto 0); -- Config Register
+        status_o        : out std_logic_vector(1 downto 0); -- Status Register
+        data_ser_o      : out std_logic                     -- Data Serial Out
     );
 end entity uart_tx;
 
@@ -28,7 +28,7 @@ architecture rtl of uart_tx is
     -- Range of data byte within transmission packet
     type t_tx_data_buffer is record
         data_byte   : std_logic_vector(7 downto 0);
-        bit9   : std_logic;
+        bit9        : std_logic;
         bit9_en     : std_logic;
         bit9_config : std_logic;
         write_en    : std_logic;
@@ -40,7 +40,7 @@ architecture rtl of uart_tx is
         shift_cnt : natural;
         empty     : std_logic;
     end record t_tx_shift_reg;
-    type t_tx_state is (s_IDLE, s_START, s_DATA_BYTE, s_BIT9, s_STOP);
+    type t_tx_state is (s_IDLE, s_START, s_DATA_BYTE, s_BIT9, s_STOP, s_2STOP);
 
     -- Constant Declarations
     -- Value of start and stop bits
@@ -51,26 +51,22 @@ architecture rtl of uart_tx is
     -- Signal Declarations
 
     -- Baud Rate Generator signals
-    signal baud_en  : std_logic;
-    signal baud_pulse    : std_logic;
-
+    signal baud_en               : std_logic;
+    signal baud_pulse            : std_logic;
     -- Transmit data buffer signals
-    signal tx_data_buffer : t_tx_data_buffer;
-    signal data_write_en_q1 : std_logic;
+    signal tx_data_buffer        : t_tx_data_buffer;
+    signal data_write_en_q1      : std_logic;
     signal tx_shift_reg_empty_q1 : std_logic;
-
     -- Transmit shift register signals
-    signal tx_shift_reg : t_tx_shift_reg;
-
+    signal tx_shift_reg          : t_tx_shift_reg;
     -- Transmit control state machine signals
-    signal tx_state   : t_tx_state;
-    signal next_state : t_tx_state;
-    signal extend_stop_bits   : std_logic;
-    signal data_ser   : std_logic;
-
-    signal tx_2_stop_bits : std_logic;
-    signal serial_en : std_logic;
-    signal tx_en  : std_logic;
+    signal tx_state              : t_tx_state;
+    signal next_state            : t_tx_state;
+    signal data_ser              : std_logic;
+    -- Generic config signals
+    signal tx_2_stop_bits        : std_logic;
+    signal serial_en             : std_logic;
+    signal tx_en                 : std_logic;
 
 begin
 
@@ -81,8 +77,8 @@ begin
     --      1 - Serial Port Enable (SPEN)
     --      0 - Transmit Enable (TXEN)
     tx_2_stop_bits             <= config_i(4);
-    tx_data_buffer.bit9_en     <= config_i(3);
-    tx_data_buffer.bit9_config <= config_i(2);
+    tx_data_buffer.bit9_config <= config_i(3);
+    tx_data_buffer.bit9_en     <= config_i(2);
     serial_en                  <= config_i(1);
     tx_en                      <= config_i(0);
 
@@ -112,15 +108,15 @@ begin
     begin
         if reset_i = '1' then
             tx_data_buffer.data_byte <= (others => '0');
-            tx_data_buffer.bit9 <= '0';
-            tx_data_buffer.empty <= '1';
-            data_write_en_q1 <= '0';
-            tx_shift_reg_empty_q1 <= '1';
+            tx_data_buffer.bit9      <= '0';
+            tx_data_buffer.empty     <= '1';
+            data_write_en_q1         <= '0';
+            tx_shift_reg_empty_q1    <= '1';
 
         elsif rising_edge(clk_i) then
             -- Track edges of write enable to tell when write is complete, and shift register empty to tell when the
             -- shift register has loaded the buffer contents.
-            data_write_en_q1 <= tx_data_buffer.write_en;
+            data_write_en_q1      <= tx_data_buffer.write_en;
             tx_shift_reg_empty_q1 <= tx_shift_reg.empty;
 
             -- Empty flag is cleared on falling edge of write enable
@@ -145,7 +141,7 @@ begin
     
             elsif tx_shift_reg.empty = '0' and tx_shift_reg_empty_q1 = '1' then
                 -- Empty buffer when shift reg has been loaded
-                tx_data_buffer.empty <= '1';
+                tx_data_buffer.empty     <= '1';
                 tx_data_buffer.data_byte <= (others => '0');
             end if;
             
@@ -159,18 +155,18 @@ begin
     proc_tx_shift_reg : process(clk_i, reset_i) is
     begin
         if reset_i = '1' then
-            tx_shift_reg.data <= (others => '0');
+            tx_shift_reg.data  <= (others => '0');
             tx_shift_reg.empty <= '1';
         elsif rising_edge(clk_i) then
 
             if tx_data_buffer.empty = '0' and tx_shift_reg.empty = '1' then
             -- Load data
-                tx_shift_reg.data <= tx_data_buffer.data_byte;
-                tx_shift_reg.empty <= '0';
-                tx_shift_reg.shift_cnt <= tx_shift_reg.data'length;
+                tx_shift_reg.data      <= tx_data_buffer.data_byte;
+                tx_shift_reg.empty     <= '0';
+                tx_shift_reg.shift_cnt <= tx_shift_reg.data'length-1;
             elsif tx_shift_reg.shift_en = '1' and baud_pulse = '1' then
             -- Shift data
-                tx_shift_reg.data <= '0' & tx_shift_reg.data(tx_shift_reg.data'left downto tx_shift_reg.data'right+1);
+                tx_shift_reg.data      <= '0' & tx_shift_reg.data(tx_shift_reg.data'left downto tx_shift_reg.data'right+1);
                 tx_shift_reg.shift_cnt <= tx_shift_reg.shift_cnt - 1;
                 if tx_shift_reg.shift_cnt = 1 then
                 -- When last bit is shifted out, set empty flag
@@ -188,24 +184,23 @@ begin
         case tx_state is
 
             when s_IDLE =>
-                data_ser <= c_SERIAL_OUT_IDLE;
-                baud_en <= '0';
+                data_ser              <= c_SERIAL_OUT_IDLE;
+                baud_en               <= '0';
                 tx_shift_reg.shift_en <= '0';
                 -- Transmission starts when the data buffer is not empty and transmission is enabled.
                 if tx_data_buffer.empty = '0' and tx_en = '1' then
-                    extend_stop_bits <= tx_2_stop_bits;
                     next_state <= s_START;
                 end if;
 
             when s_START =>
                 data_ser <= c_SERIAL_OUT_START;
-                baud_en <= '1';
+                baud_en  <= '1';
                 if baud_pulse = '1' then
                     next_state <= s_DATA_BYTE;
                 end if;
 
             when s_DATA_BYTE =>
-                data_ser <= tx_shift_reg.data(0);
+                data_ser              <= tx_shift_reg.data(0);
                 tx_shift_reg.shift_en <= '1';
                 if baud_pulse = '1' then
                     if tx_shift_reg.shift_cnt = 0 then
@@ -227,15 +222,26 @@ begin
             when s_STOP =>
                 data_ser <= c_SERIAL_OUT_STOP;
                 if baud_pulse = '1' then
-                    -- If this is the last bit, set up next state. Otherwise, set up the next bit to be the last bit.
-                    if extend_stop_bits = '0' then
+                    if tx_2_stop_bits = '0' then
+                        -- If last bit, prepare for the end of the packet
                         if tx_shift_reg.empty = '1' then
                             next_state <= s_IDLE;
                         else
                             next_state <= s_START;
                         end if;
                     else
-                        extend_stop_bits <= '0';
+                        next_state <= s_2STOP;
+                    end if;
+                end if;
+
+            when s_2STOP =>
+                data_ser   <= c_SERIAL_OUT_STOP;
+                if baud_pulse = '1' then
+                    -- Prepare for the end of the packet
+                    if tx_shift_reg.empty = '1' then
+                        next_state <= s_IDLE;
+                    else
+                        next_state <= s_START;
                     end if;
                 end if;
 
