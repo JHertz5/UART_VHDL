@@ -1,0 +1,73 @@
+[*]
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Tue Jan  5 18:01:41 2021
+[*]
+[dumpfile] "/home/jhertz5/Code/vhdl_exercises/uart/work/wave.ghw"
+[dumpfile_mtime] "Tue Jan  5 17:50:14 2021"
+[dumpfile_size] 159748
+[savefile] "/home/jhertz5/Code/vhdl_exercises/uart/uart_tb.gtkw"
+[timestart] 0
+[size] 959 1022
+[pos] 960 0
+*-37.591476 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[treeopen] top.uart_tb.
+[treeopen] top.uart_tb.cmp_uart_tx.
+[treeopen] top.uart_tb.cmp_uart_tx.tx_data_buffer.
+[treeopen] top.uart_tb.cmp_uart_tx.tx_shift_reg.
+[treeopen] top.uart_tb.uart_tx.
+[sst_width] 210
+[signals_width] 219
+[sst_expanded] 1
+[sst_vpaned_height] 291
+@28
+top.uart_tb.clk
+top.uart_tb.reset
+top.uart_tb.cmp_uart_tx.data_bit9_i
+top.uart_tb.cmp_uart_tx.data_write_en_i
+@22
+#{top.uart_tb.cmp_uart_tx.data_par_i[7:0]} top.uart_tb.cmp_uart_tx.data_par_i[7] top.uart_tb.cmp_uart_tx.data_par_i[6] top.uart_tb.cmp_uart_tx.data_par_i[5] top.uart_tb.cmp_uart_tx.data_par_i[4] top.uart_tb.cmp_uart_tx.data_par_i[3] top.uart_tb.cmp_uart_tx.data_par_i[2] top.uart_tb.cmp_uart_tx.data_par_i[1] top.uart_tb.cmp_uart_tx.data_par_i[0]
+#{top.uart_tb.cmp_uart_tx.config_i[4:0]} top.uart_tb.cmp_uart_tx.config_i[4] top.uart_tb.cmp_uart_tx.config_i[3] top.uart_tb.cmp_uart_tx.config_i[2] top.uart_tb.cmp_uart_tx.config_i[1] top.uart_tb.cmp_uart_tx.config_i[0]
+@28
+#{top.uart_tb.cmp_uart_tx.status_o[1:0]} top.uart_tb.cmp_uart_tx.status_o[1] top.uart_tb.cmp_uart_tx.status_o[0]
+top.uart_tb.cmp_uart_tx.data_ser_o
+@800200
+-baud_rate_gen
+@28
+top.uart_tb.cmp_uart_tx.baud_pulse
+top.uart_tb.cmp_uart_tx.baud_en
+@1000200
+-baud_rate_gen
+@800200
+-tx_data_buffer
+@22
+#{top.uart_tb.cmp_uart_tx.tx_data_buffer.data_byte[7:0]} top.uart_tb.cmp_uart_tx.tx_data_buffer.data_byte[7] top.uart_tb.cmp_uart_tx.tx_data_buffer.data_byte[6] top.uart_tb.cmp_uart_tx.tx_data_buffer.data_byte[5] top.uart_tb.cmp_uart_tx.tx_data_buffer.data_byte[4] top.uart_tb.cmp_uart_tx.tx_data_buffer.data_byte[3] top.uart_tb.cmp_uart_tx.tx_data_buffer.data_byte[2] top.uart_tb.cmp_uart_tx.tx_data_buffer.data_byte[1] top.uart_tb.cmp_uart_tx.tx_data_buffer.data_byte[0]
+@28
+top.uart_tb.cmp_uart_tx.tx_data_buffer.write_en
+top.uart_tb.cmp_uart_tx.tx_data_buffer.empty
+top.uart_tb.cmp_uart_tx.tx_data_buffer.bit9_en
+top.uart_tb.cmp_uart_tx.tx_data_buffer.bit9_config
+top.uart_tb.cmp_uart_tx.tx_data_buffer.bit9
+@1000200
+-tx_data_buffer
+@800200
+-tx_shift_reg
+@22
+#{top.uart_tb.cmp_uart_tx.tx_shift_reg.data[7:0]} top.uart_tb.cmp_uart_tx.tx_shift_reg.data[7] top.uart_tb.cmp_uart_tx.tx_shift_reg.data[6] top.uart_tb.cmp_uart_tx.tx_shift_reg.data[5] top.uart_tb.cmp_uart_tx.tx_shift_reg.data[4] top.uart_tb.cmp_uart_tx.tx_shift_reg.data[3] top.uart_tb.cmp_uart_tx.tx_shift_reg.data[2] top.uart_tb.cmp_uart_tx.tx_shift_reg.data[1] top.uart_tb.cmp_uart_tx.tx_shift_reg.data[0]
+@28
+top.uart_tb.cmp_uart_tx.tx_shift_reg.empty
+@420
+top.uart_tb.cmp_uart_tx.tx_shift_reg.shift_cnt
+@28
+top.uart_tb.cmp_uart_tx.tx_shift_reg.shift_en
+@1000200
+-tx_shift_reg
+@420
+top.uart_tb.cmp_uart_tx.tx_state
+top.uart_tb.cmp_uart_tx.next_state
+@28
+top.uart_tb.cmp_uart_tx.extend_stop_bits
+@29
+top.uart_tb.cmp_uart_tx.tx_2_stop_bits
+[pattern_trace] 1
+[pattern_trace] 0
