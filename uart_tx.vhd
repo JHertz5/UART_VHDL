@@ -24,8 +24,7 @@ end entity uart_tx;
 
 architecture rtl of uart_tx is
 
-  -- Subtype Declarations
-  -- Range of data byte within transmission packet
+  -- Type Declarations
   type t_tx_data_buffer is record
     data_byte   : std_logic_vector(7 downto 0);
     bit9        : std_logic;
@@ -89,6 +88,7 @@ begin
       clk_i           => clk_i,
       reset_i         => reset_i,
       baud_en_i       => baud_en,
+      rx_rate_i       => '0',
       baud_rate_set_i => x"14", -- TODO test/implement variable baud rate
       baud_pulse_o    => baud_pulse
     );
