@@ -11,6 +11,7 @@ mkdir -p work
 cd work
 
 echo "analysing ..."
+ghdl -a --std=08 --work=uart_pkg ../uart_pkg.vhd
 ghdl -a --std=08 ../baud_rate_gen.vhd
 ghdl -a --std=08 ../uart_tx.vhd
 ghdl -a --std=08 ../uart_rx.vhd

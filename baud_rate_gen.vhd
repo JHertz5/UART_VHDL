@@ -8,13 +8,17 @@
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
+library uart_pkg;
+  use uart_pkg.uart_pkg.all;
 
 entity baud_rate_gen is
+  generic (
+    g_DATA_RECOVERY : std_logic := '0' -- 0 to output baud rate, 1 to output high speed data recovery rate
+  );
   port (
     clk_i           : in  std_logic;                    -- Clock In
     reset_i         : in  std_logic;                    -- Async Reset (actve high)
     baud_en_i       : in  std_logic;                    -- Baud Rate Generator Enable (active high)
-    rx_rate_i       : in  std_logic;                    -- Run at 16x rate for data recovery
     baud_rate_set_i : in  std_logic_vector(7 downto 0); -- Baud rate setting
     baud_pulse_o    : out std_logic                     -- Baud Rate Pulse Out
   );
@@ -31,8 +35,8 @@ begin
 
   baud_rate_set_int <= to_integer(unsigned(baud_rate_set_i));
 
-  rate_multiplier <= 1 when rx_rate_i = '1' else
-                     16;
+  rate_multiplier <= 1 when g_DATA_RECOVERY = '1' else
+                     c_DATA_RECOVERY_RATIO;
 
   proc_baud_rate_gen : process(clk_i) is
   begin

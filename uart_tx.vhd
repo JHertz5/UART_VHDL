@@ -7,6 +7,8 @@
 
 library ieee;
   use ieee.std_logic_1164.all;
+library uart_pkg;
+  use uart_pkg.uart_pkg.all;
 library work;
 
 entity uart_tx is
@@ -41,15 +43,9 @@ architecture rtl of uart_tx is
   end record t_tx_shift_reg;
   type t_tx_state is (s_IDLE, s_START, s_DATA_BYTE, s_BIT9, s_STOP, s_2STOP);
 
-  -- Constant Declarations
-  -- Value of start and stop bits
-  constant c_SERIAL_OUT_IDLE  : std_logic := '1';
-  constant c_SERIAL_OUT_START : std_logic := '0';
-  constant c_SERIAL_OUT_STOP  : std_logic := '1';
-
   -- Signal Declarations
 
-  -- Baud Rate Generator signals
+  -- Baud rate generator signals
   signal baud_en               : std_logic;
   signal baud_pulse            : std_logic;
   -- Transmit data buffer signals
@@ -88,7 +84,6 @@ begin
       clk_i           => clk_i,
       reset_i         => reset_i,
       baud_en_i       => baud_en,
-      rx_rate_i       => '0',
       baud_rate_set_i => x"14", -- TODO test/implement variable baud rate
       baud_pulse_o    => baud_pulse
     );
